@@ -6,7 +6,7 @@ Afinador de violão, guitarra, ukulele e baixo que funciona no navegador do celu
 
 ## O que faz
 
-- **Afinador:** ouve o instrumento pelo microfone, mostra a nota, a corda e quantos cents falta, com a dica "aperte" ou "solte a tarraxa". Detecta a corda sozinho ou trabalha com uma corda fixa.
+- **Afinador (tela inicial):** liga o microfone sozinho ao abrir, ouve o instrumento pelo microfone, mostra a nota, a corda e quantos cents falta, com a dica "aperte" ou "solte a tarraxa". Detecta a corda sozinho ou trabalha com uma corda fixa.
 - **Afinações padrão:** violão e guitarra (E A D G B E), ukulele (G C E A) e baixo (E A D G), com o desenho das cordas, as frequências e o som de referência de cada nota.
 - **Ajustes:** Lá de referência (430 a 450 Hz), margem de afinado (±3, ±5 ou ±10 cents), notas em C D E ou Dó Ré Mi, tela ligada enquanto afina e instalação no celular.
 

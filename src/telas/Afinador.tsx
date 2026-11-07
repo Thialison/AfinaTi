@@ -1,11 +1,23 @@
 import { useEffect, useRef, useState } from 'react';
 import type { Ajustes } from '../ajustes';
+import type { EstadoMicrofone } from '../audio/useMicrofone';
 import { useMicrofone } from '../audio/useMicrofone';
-import { IconeMicrofone } from '../componentes/Icones';
+import { Folha } from '../componentes/Folha';
+import { IconeCelular, IconeFechar, IconeMicrofone, IconeMicrofoneDesligado } from '../componentes/Icones';
+import { faixaFoiFechada, fecharFaixa, passosParaInstalar, passosParaLiberarMicrofone } from '../instalacao';
 import { INSTRUMENTOS, cordaMaisProxima, instrumentoPorId } from '../musica/instrumentos';
 import { centsEntre, formatar, frequenciaDaNota, nomeDaNota, oitavaDaNota } from '../musica/notas';
-import { useTelaLigada } from '../sistema';
-import { Permissao } from './Permissao';
+import { useInstalacao, useTelaLigada } from '../sistema';
+
+/** Texto do botão do microfone e do aviso abaixo da nota, quando o microfone não está ouvindo. */
+const MIC_PARADO: Record<Exclude<EstadoMicrofone, 'ouvindo'>, { botao: string; aviso: string }> = {
+  parado: { botao: 'Ligar microfone', aviso: 'Toque em Ligar microfone' },
+  suspenso: { botao: 'Ligar microfone', aviso: 'Toque na tela para começar a ouvir' },
+  pedindo: { botao: 'Ligando…', aviso: 'Aguardando o microfone…' },
+  erro: { botao: 'Ligar microfone', aviso: 'Outro app pode estar usando o microfone' },
+  negado: { botao: 'Microfone bloqueado', aviso: 'Libere o microfone para afinar' },
+  indisponivel: { botao: 'Sem microfone', aviso: 'Afine de ouvido na aba Afinações' }
+};
 
 interface Props {
   ajustes: Ajustes;
@@ -21,7 +33,11 @@ const SEGURAR_AFINADO = 500;
 
 export function Afinador({ ajustes, mudar }: Props) {
   const mic = useMicrofone();
-  useTelaLigada(ajustes.telaLigada && mic.estado === 'ouvindo');
+  const ouvindo = mic.estado === 'ouvindo';
+  useTelaLigada(ajustes.telaLigada && ouvindo);
+  const { situacao: instalacao, instalar } = useInstalacao();
+  const [faixaFechada, setFaixaFechada] = useState(faixaFoiFechada);
+  const [folha, setFolha] = useState<'instalar' | 'microfone' | null>(null);
 
   const instrumento = instrumentoPorId(ajustes.instrumento);
   const [automatico, setAutomatico] = useState(true);
@@ -37,7 +53,7 @@ export function Afinador({ ajustes, mudar }: Props) {
   }, [instrumento.id]);
 
   const { a4, tolerancia, notacao } = ajustes;
-  const freq = mic.freq;
+  const freq = ouvindo ? mic.freq : null;
 
   let indice = automatico ? ultimaAuto.current : cordaFixa;
   let cents: number | null = null;
@@ -55,7 +71,7 @@ export function Afinador({ ajustes, mudar }: Props) {
   const corda = instrumento.cordas[indice];
   const alvo = frequenciaDaNota(corda.midi, a4);
   const dentro = cents !== null && Math.abs(cents) <= tolerancia;
-  const situacao = cents === null ? 'sem-som' : dentro ? 'ok' : 'fora';
+  const situacao = !ouvindo ? 'sem-som mic-parado' : cents === null ? 'sem-som' : dentro ? 'ok' : 'fora';
 
   // Segurou afinado por meio segundo: marca a corda e vibra (no Android).
   useEffect(() => {
@@ -70,24 +86,26 @@ export function Afinador({ ajustes, mudar }: Props) {
     return () => window.clearTimeout(t);
   }, [dentro, indice]);
 
-  if (mic.estado !== 'ouvindo') {
-    return (
-      <div className="tela">
-        <div className="topo">
-          <p className="marca">AfinaTi</p>
-        </div>
-        <Permissao estado={mic.estado} onPermitir={() => void mic.iniciar()} />
-      </div>
-    );
-  }
+  const parado = mic.estado === 'ouvindo' ? null : MIC_PARADO[mic.estado];
+  const tocarMicrofone = () => {
+    if (mic.estado === 'negado' || mic.estado === 'indisponivel') setFolha('microfone');
+    else void mic.iniciar();
+  };
+  const mostrarFaixa = instalacao !== 'instalado' && !faixaFechada;
+  const tocarInstalar = () => {
+    if (instalacao === 'convite') void instalar();
+    else setFolha('instalar');
+  };
+  const infoInstalar = passosParaInstalar(instalacao);
 
   const nome = nomeDaNota(corda.midi, notacao);
   const nomePt = nomeDaNota(corda.midi, 'solfejo');
   const graus = cents === null ? 0 : Math.max(-50, Math.min(50, cents)) * GRAUS_POR_CENT;
   const centsArred = cents === null ? 0 : Math.round(cents);
   const textoCents = cents === null ? '' : centsArred === 0 ? '0 cents' : `${centsArred > 0 ? '+' : '−'}${Math.abs(centsArred)} cents`;
-  const estado =
-    cents === null
+  const estado = parado
+    ? parado.aviso
+    : cents === null
       ? 'Toque uma corda'
       : dentro
         ? 'Afinado'
@@ -100,15 +118,46 @@ export function Afinador({ ajustes, mudar }: Props) {
       <header className="topo">
         <div className="topo-esq">
           <h1 className="marca">AfinaTi</h1>
-          <span className="selo">
-            <IconeMicrofone tamanho={12} espessura={2.2} />
-            Ouvindo
-          </span>
+          {parado ? (
+            <button type="button" className="selo-botao" onClick={tocarMicrofone} disabled={mic.estado === 'pedindo'}>
+              <IconeMicrofoneDesligado tamanho={14} espessura={2.2} />
+              {parado.botao}
+            </button>
+          ) : (
+            <span className="selo">
+              <IconeMicrofone tamanho={12} espessura={2.2} />
+              Ouvindo
+            </span>
+          )}
         </div>
         <a className="chip-link" href="#/ajustes" aria-label={`Lá de referência: ${a4} Hz. Abrir ajustes`}>
-          Lá = {a4} Hz
+          Lá {a4} Hz
         </a>
       </header>
+
+      {mostrarFaixa && (
+        <div className="faixa-instalar">
+          <IconeCelular tamanho={20} />
+          <div className="faixa-texto">
+            <p className="faixa-titulo">Instale o AfinaTi</p>
+            <p>Ícone na tela inicial e uso sem internet</p>
+          </div>
+          <button type="button" className="faixa-botao" onClick={tocarInstalar}>
+            Instalar
+          </button>
+          <button
+            type="button"
+            className="faixa-fechar"
+            aria-label="Agora não"
+            onClick={() => {
+              fecharFaixa();
+              setFaixaFechada(true);
+            }}
+          >
+            <IconeFechar tamanho={16} espessura={2.2} />
+          </button>
+        </div>
+      )}
 
       <div className="instrumentos" role="group" aria-label="Instrumento">
         {INSTRUMENTOS.map((i) => (
@@ -201,6 +250,25 @@ export function Afinador({ ajustes, mudar }: Props) {
           ))}
         </div>
       </section>
+
+      <Folha
+        aberta={folha === 'instalar'}
+        titulo={infoInstalar.titulo}
+        texto="Fica com ícone na tela inicial, abre em tela cheia e funciona sem internet."
+        passos={infoInstalar.passos}
+        onFechar={() => setFolha(null)}
+      />
+      <Folha
+        aberta={folha === 'microfone'}
+        titulo={mic.estado === 'indisponivel' ? 'Microfone não encontrado' : 'Liberar o microfone'}
+        texto={
+          mic.estado === 'indisponivel'
+            ? 'Este navegador ou aparelho não dá acesso ao microfone. Tente pelo Chrome (Android) ou pelo Safari (iPhone), ou afine de ouvido na aba Afinações.'
+            : 'Sem o microfone o afinador não ouve as cordas. O som é analisado só no aparelho e nada é gravado.'
+        }
+        passos={mic.estado === 'indisponivel' ? [] : passosParaLiberarMicrofone()}
+        onFechar={() => setFolha(null)}
+      />
     </div>
   );
 }

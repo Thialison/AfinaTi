@@ -1,10 +1,14 @@
+import type { ReactNode } from 'react';
+
 interface Props {
   tamanho?: number;
   cor?: string;
   espessura?: number;
+  /** Com rótulo, o ícone é anunciado pelo leitor de tela; sem rótulo, é só decoração. */
+  rotulo?: string;
 }
 
-function Base({ tamanho = 22, cor = 'currentColor', espessura = 2, children }: Props & { children: React.ReactNode }) {
+function Base({ tamanho = 22, cor = 'currentColor', espessura = 2, rotulo, children }: Props & { children: ReactNode }) {
   return (
     <svg
       width={tamanho}
@@ -15,7 +19,9 @@ function Base({ tamanho = 22, cor = 'currentColor', espessura = 2, children }: P
       strokeWidth={espessura}
       strokeLinecap="round"
       strokeLinejoin="round"
-      aria-hidden="true"
+      role={rotulo ? 'img' : undefined}
+      aria-label={rotulo}
+      aria-hidden={rotulo ? undefined : true}
       focusable="false"
     >
       {children}
@@ -81,5 +87,19 @@ export const IconeCompartilhar = (p: Props) => (
   <Base {...p}>
     <path d="M12 3v12M8 7l4-4 4 4" />
     <path d="M7 11H6v9h12v-9h-1" />
+  </Base>
+);
+
+export const IconeMenu = (p: Props) => (
+  <Base {...p} espessura={0}>
+    <circle cx="12" cy="5" r="2" fill="currentColor" />
+    <circle cx="12" cy="12" r="2" fill="currentColor" />
+    <circle cx="12" cy="19" r="2" fill="currentColor" />
+  </Base>
+);
+
+export const IconeFechar = (p: Props) => (
+  <Base {...p}>
+    <path d="M6 6l12 12M18 6L6 18" />
   </Base>
 );

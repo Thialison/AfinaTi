@@ -245,3 +245,65 @@ a { color: inherit; }
   .nota-grande .letra { font-size: 88px; }
   .nota-grande .oitava { margin-top: 52px; }
 }
+
+/* Microfone parado: medidor e nota apagados */
+.mic-parado .nota-grande .letra { color: #3a4553; }
+.selo-botao {
+  display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 12px; border-radius: 18px;
+  border: 1px solid #6b5226; background: var(--desafinado-fundo); color: var(--desafinado); font-size: 12px; font-weight: 600;
+}
+.selo-botao:disabled { opacity: 0.7; }
+
+/* Faixa de instalação */
+.faixa-instalar {
+  margin: 0 16px 10px; display: flex; align-items: center; gap: 10px; padding: 8px 6px 8px 12px;
+  border-radius: 14px; background: var(--afinado-fundo); border: 1px solid var(--afinado-borda);
+}
+.faixa-instalar > svg { flex: 0 0 auto; color: var(--afinado); }
+.faixa-texto { flex: 1 1 auto; min-width: 0; }
+.faixa-texto p { margin: 1px 0 0; font-size: 12px; color: var(--texto-2); }
+.faixa-texto .faixa-titulo { margin: 0; font-size: 13px; font-weight: 600; color: var(--texto); }
+.faixa-botao {
+  flex: 0 0 auto; height: 36px; padding: 0 14px; border-radius: 18px; border: 0;
+  background: var(--afinado); color: var(--fundo); font-size: 13px; font-weight: 600;
+}
+.faixa-fechar {
+  flex: 0 0 auto; width: 36px; height: 36px; border: 0; border-radius: 18px; background: transparent;
+  color: var(--apagado); display: flex; align-items: center; justify-content: center;
+}
+
+/* Folha que sobe de baixo */
+.folha {
+  margin: auto auto 0; padding: 0; border: 0; width: 100%; max-width: 480px; max-height: 90dvh;
+  background: transparent; color: var(--texto);
+}
+.folha::backdrop { background: rgba(5, 8, 11, 0.72); }
+.folha-conteudo {
+  background: var(--superficie); border-top: 1px solid var(--borda); border-radius: 24px 24px 0 0;
+  padding: 12px 20px calc(28px + env(safe-area-inset-bottom)); display: flex; flex-direction: column; gap: 16px;
+}
+.folha[open] .folha-conteudo { animation: subir 200ms ease-out; }
+@keyframes subir { from { transform: translateY(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.folha-alca { align-self: center; width: 40px; height: 4px; border-radius: 2px; background: var(--borda); }
+.folha h2 { margin: 0; font-family: var(--titulo); font-size: 22px; font-weight: 700; }
+.folha-conteudo > div > p { margin: 6px 0 0; font-size: 14px; line-height: 1.5; color: var(--texto-2); }
+.folha-passos { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 12px; }
+.folha-passos:empty { display: none; }
+.folha-passos li { display: flex; align-items: center; gap: 12px; font-size: 15px; line-height: 1.4; }
+.folha-passos .bola {
+  flex: 0 0 auto; width: 28px; height: 28px; border-radius: 14px; background: var(--afinado); color: var(--fundo);
+  font-size: 13px; font-weight: 700; display: flex; align-items: center; justify-content: center;
+}
+.folha-texto { flex: 1 1 auto; }
+.folha-icone {
+  flex: 0 0 auto; width: 36px; height: 36px; border-radius: 10px; background: var(--fundo); color: var(--afinado);
+  display: flex; align-items: center; justify-content: center;
+}
+.botao-claro { height: 52px; border-radius: 26px; border: 0; background: var(--texto); color: var(--fundo); font-size: 16px; font-weight: 600; }
+@media (prefers-reduced-motion: reduce) { .folha[open] .folha-conteudo { animation: none; } }
+
+/* Topo numa linha só, mesmo com o selo mais longo */
+.topo { padding-left: 16px; padding-right: 16px; }
+.topo-esq { min-width: 0; gap: 8px; }
+.selo, .selo-botao, .chip-link { white-space: nowrap; flex: 0 0 auto; }
+.chip-link { padding: 0 10px; }
