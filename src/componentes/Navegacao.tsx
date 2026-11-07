@@ -1,10 +1,11 @@
-import { IconeAjustes, IconeBraco, IconeMedidor } from './Icones';
+import { IconeAjustes, IconeBraco, IconeMedidor, IconeOuvido } from './Icones';
 
-export type Rota = 'afinador' | 'afinacoes' | 'ajustes';
+export type Rota = 'afinador' | 'afinacoes' | 'treino' | 'ajustes';
 
 const ITENS: { rota: Rota; rotulo: string; Icone: typeof IconeMedidor }[] = [
   { rota: 'afinador', rotulo: 'Afinador', Icone: IconeMedidor },
   { rota: 'afinacoes', rotulo: 'Afinações', Icone: IconeBraco },
+  { rota: 'treino', rotulo: 'Treino', Icone: IconeOuvido },
   { rota: 'ajustes', rotulo: 'Ajustes', Icone: IconeAjustes }
 ];
 

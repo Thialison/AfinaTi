@@ -8,6 +8,7 @@ Afinador de violão, guitarra, ukulele e baixo que funciona no navegador do celu
 
 - **Afinador (tela inicial):** liga o microfone sozinho ao abrir, ouve o instrumento pelo microfone, mostra a nota, a corda e quantos cents falta, com a dica "aperte" ou "solte a tarraxa". Detecta a corda sozinho ou trabalha com uma corda fixa.
 - **Afinações padrão:** violão e guitarra (E A D G B E), ukulele (G C E A) e baixo (E A D G), com o desenho das cordas, as frequências e o som de referência de cada nota.
+- **Treino de ouvido:** descubra pelo som qual corda, nota ou acorde está tocando. Níveis: cordas soltas, notas naturais e as 12 notas; acordes maior ou menor, acordes abertos e com sétima. No fim mostra o placar, o que você já reconhece, o que ainda confunde (com "ouvir as duas") e permite treinar só o que errou. O histórico fica salvo no aparelho.
 - **Ajustes:** Lá de referência (430 a 450 Hz), margem de afinado (±3, ±5 ou ±10 cents), notas em C D E ou Dó Ré Mi, tela ligada enquanto afina e instalação no celular.
 
 ## Privacidade
@@ -25,6 +26,7 @@ O som é analisado só no aparelho: nada é gravado nem enviado. O microfone é 
 - Microfone: `getUserMedia` com cancelamento de eco, redução de ruído e ganho automático desligados
 - Detecção da nota: algoritmo McLeod ([pitchy](https://github.com/ianprime0509/pitchy)), 4096 amostras por leitura, mediana das últimas leituras
 - Som de referência: oscilador da Web Audio API
+- Sons do treino: corda dedilhada sintetizada (Karplus-Strong com atraso fracionário, afinada em menos de 3 cents), sem arquivos de áudio
 - PWA: `vite-plugin-pwa` (Workbox), tudo pré-carregado para uso offline
 - Screen Wake Lock API para manter a tela ligada
 - Fontes Inter e Space Grotesk empacotadas no app

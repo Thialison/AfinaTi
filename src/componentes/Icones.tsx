@@ -103,3 +103,24 @@ export const IconeFechar = (p: Props) => (
     <path d="M6 6l12 12M18 6L6 18" />
   </Base>
 );
+
+export const IconeOuvido = (p: Props) => (
+  <Base {...p}>
+    <path d="M6.5 9a5.5 5.5 0 0 1 11 0c0 2.6-1.6 3.8-2.8 5-.9.9-1.2 1.8-1.2 3a3 3 0 0 1-6 0" />
+    <path d="M9.5 9a2.5 2.5 0 0 1 5 0" />
+  </Base>
+);
+
+export const IconeSom = (p: Props) => (
+  <Base {...p}>
+    <path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z" />
+    <path d="M15.5 9a4 4 0 0 1 0 6" />
+    <path d="M18 6.5a7.5 7.5 0 0 1 0 11" />
+  </Base>
+);
+
+export const IconeX = (p: Props) => (
+  <Base {...p}>
+    <path d="M6 6l12 12M18 6L6 18" />
+  </Base>
+);

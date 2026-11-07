@@ -5,11 +5,13 @@ import { Navegacao } from './componentes/Navegacao';
 import { Afinacoes } from './telas/Afinacoes';
 import { Afinador } from './telas/Afinador';
 import { AjustesTela } from './telas/AjustesTela';
+import { Treino } from './telas/Treino';
 
-const ROTAS: Rota[] = ['afinador', 'afinacoes', 'ajustes'];
+const ROTAS: Rota[] = ['afinador', 'afinacoes', 'treino', 'ajustes'];
 const TITULOS: Record<Rota, string> = {
   afinador: 'AfinaTi · Afinador',
   afinacoes: 'AfinaTi · Afinações padrão',
+  treino: 'AfinaTi · Treino de ouvido',
   ajustes: 'AfinaTi · Ajustes'
 };
 
@@ -48,6 +50,7 @@ export function App() {
             }}
           />
         )}
+        {rota === 'treino' && <Treino ajustes={ajustes} />}
         {rota === 'ajustes' && <AjustesTela ajustes={ajustes} mudar={mudar} />}
       </main>
       <Navegacao atual={rota} />
