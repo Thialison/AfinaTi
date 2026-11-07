@@ -12,7 +12,7 @@ export default defineConfig({
       registerType: 'autoUpdate',
       // O registro é feito em src/atualizacao.ts, que também aplica as versões novas na hora.
       injectRegister: false,
-      includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
+      includeAssets: ['favicon-v2.svg', 'apple-touch-icon-v2.png'],
       manifest: {
         id: '/AfinaTi/',
         name: 'AfinaTi',
@@ -27,9 +27,9 @@ export default defineConfig({
         theme_color: '#0F1318',
         categories: ['music', 'utilities'],
         icons: [
-          { src: 'icon-192.png', sizes: '192x192', type: 'image/png' },
-          { src: 'icon-512.png', sizes: '512x512', type: 'image/png' },
-          { src: 'icon-maskable-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
+          { src: 'icon-192-v2.png', sizes: '192x192', type: 'image/png' },
+          { src: 'icon-512-v2.png', sizes: '512x512', type: 'image/png' },
+          { src: 'icon-maskable-512-v2.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' }
         ]
       },
       workbox: {
