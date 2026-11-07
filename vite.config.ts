@@ -10,7 +10,8 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      injectRegister: 'script',
+      // O registro é feito em src/atualizacao.ts, que também aplica as versões novas na hora.
+      injectRegister: false,
       includeAssets: ['favicon.svg', 'apple-touch-icon.png'],
       manifest: {
         id: '/AfinaTi/',
