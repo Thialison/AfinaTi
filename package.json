@@ -1,7 +1,7 @@
 {
   "name": "afinati",
   "private": true,
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "description": "AfinaTi: afinador de violão, guitarra, ukulele e baixo (PWA)",
   "scripts": {

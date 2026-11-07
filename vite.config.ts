@@ -35,7 +35,11 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         navigateFallback: 'index.html',
-        cleanupOutdatedCaches: true
+        cleanupOutdatedCaches: true,
+        // A versão nova assume assim que baixa, sem esperar o app ser fechado.
+        // (O plugin só liga isso sozinho quando ele mesmo faz o registro; aqui o registro é nosso.)
+        skipWaiting: true,
+        clientsClaim: true
       }
     })
   ],

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { segurarAtualizacao } from '../atualizacao';
 import { IconeOk, IconeSom, IconeX } from '../componentes/Icones';
 import { INSTRUMENTOS } from '../musica/instrumentos';
 import type { Conteudo, Item, Pergunta } from '../treino/conteudo';
@@ -52,14 +53,15 @@ export function TreinoJogo({ config, conteudo, rodadas, a4, onFim }: Props) {
     tocar(referencia);
   }, [indice]); // só quando muda de rodada
 
-  // Sai do jogo sem deixar som tocando.
-  useEffect(
-    () => () => {
+  // Durante a partida, uma versão nova do app espera; ao sair, nada fica tocando.
+  useEffect(() => {
+    segurarAtualizacao(true);
+    return () => {
       window.clearTimeout(timerSom.current);
       pararSons();
-    },
-    []
-  );
+      segurarAtualizacao(false);
+    };
+  }, []);
 
   const responder = (item: Item) => {
     if (resposta) return;
